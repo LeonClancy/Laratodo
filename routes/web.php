@@ -21,5 +21,5 @@ Auth::routes();
 Route::get('/home', 'TaskController@index')->name('home');
 
 Route::resource('task', 'TaskController');
-
+Route::get('/task/completes', 'TaskController@completes')->name('task.completes');
 Route::patch('/task/{id}/complete', 'TaskController@complete')->name('task.complete');

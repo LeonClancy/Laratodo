@@ -121,7 +121,12 @@ class TaskController extends Controller
 
     public function completes()
     {
-        $task = Task::where('user_id',auth()->id());
-
+        $tasks = Task::where('user_id',auth()->id())
+                    ->where('complete', 1)
+                    ->get();
+        dd($tasks);
+        return view('task.complete', [
+            'tasks' => $tasks
+        ]);
     }
 }
