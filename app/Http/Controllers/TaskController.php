@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Task;
 use App\Policies\TaskPolicy;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
 {
@@ -44,6 +46,14 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = $this->taskValidator($request);
+
+        if($validator->fails()) {
+            return Redirect('task')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $task = new Task();
 
         $task->name = $request->name;
@@ -89,6 +99,13 @@ class TaskController extends Controller
     public function update(Request $request,Task $task)
     {
         $this->authorize('update', $task);
+
+        $validator = $this->taskValidator($request);
+
+        if($validator->fails()) {
+            return Redirect(route('task.edit', $task->id))
+                ->withErrors($validator);
+        }
 
         $task->name = $request->name;
 
@@ -139,6 +156,7 @@ class TaskController extends Controller
         $tasks = Task::where('user_id', auth()->id())
                     ->where('complete', 1)
                     ->get();
+
         return view('task.complete', [
             'tasks' => $tasks
         ]);
@@ -155,7 +173,19 @@ class TaskController extends Controller
 
         $task->complete = 0;
         $task->save();
-        
+
         return Redirect(route('task.completed'));
+    }
+
+    /**
+     *  輸入驗證
+     *
+     *  @return \illuminate\Http\Response
+     */
+    private function taskValidator($request)
+    {
+        return Validator::make($request->all(),[
+            'name' => 'required|min:2'
+        ]);
     }
 }
