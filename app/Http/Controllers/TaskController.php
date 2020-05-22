@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Task;
-use Illuminate\Support\Facades\Redirect;
-use Laravel\Ui\Presets\React;
 
 class TaskController extends Controller
 {
