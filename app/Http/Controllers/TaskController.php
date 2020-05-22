@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Task;
+use App\Policies\TaskPolicy;
 
 class TaskController extends Controller
 {
@@ -44,8 +45,10 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         $task = new Task();
+
         $task->name = $request->name;
         $task->user_id = auth()->id();
+
         $task->save();
         return Redirect('task');
     }
@@ -67,9 +70,9 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Task $task)
     {
-        $task = Task::find($id);
+        $this->authorize('edit', $task);
 
         return view('task/edit', [
             'task' => $task
@@ -83,11 +86,14 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request,Task $task)
     {
-        $task = Task::find($id);
+        $this->authorize('update', $task);
+
         $task->name = $request->name;
+
         $task->save();
+
         return Redirect(route('task.index'));
     }
 
@@ -97,10 +103,12 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Task $task)
     {
-        $task = Task::find($id);
+        $this->authorize('delete',$task);
+
         $task->delete();
+
         return Redirect(route('task.index'));
     }
 
@@ -110,11 +118,14 @@ class TaskController extends Controller
      *  @param int $id
      *  @return \Illuminate\Http\Response
      */
-    public function complete($id)
+    public function complete(Task $task)
     {
-        $task = Task::find($id);
+        $this->authorize('complete', $task);
+
         $task->complete = 1;
+
         $task->save();
+
         return Redirect(route('task.index'));
     }
 
@@ -138,11 +149,13 @@ class TaskController extends Controller
      *
      *  @return \illuminate\Http\Response
      */
-    public function resume($id)
+    public function resume(Task $task)
     {
-        $task = Task::find($id);
+        $this->authorize('resume', $task);
+
         $task->complete = 0;
         $task->save();
+        
         return Redirect(route('task.completed'));
     }
 }
