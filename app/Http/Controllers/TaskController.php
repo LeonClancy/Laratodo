@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Task;
 use Illuminate\Support\Facades\Redirect;
+use Laravel\Ui\Presets\React;
 
 class TaskController extends Controller
 {
@@ -21,7 +22,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = auth()->user()->tasks;
+        $tasks = auth()->user()->tasks()->incomplete()->get();
 
         return view('task.list')->with('tasks',$tasks);
     }
@@ -119,14 +120,31 @@ class TaskController extends Controller
         return Redirect(route('task.index'));
     }
 
-    public function completes()
+    /**
+     *  list completed tasks.
+     *
+     *  @return \Illuminate\Http\Response
+     */
+    public function completed()
     {
-        $tasks = Task::where('user_id',auth()->id())
+        $tasks = Task::where('user_id', auth()->id())
                     ->where('complete', 1)
                     ->get();
-        dd($tasks);
         return view('task.complete', [
             'tasks' => $tasks
         ]);
+    }
+
+    /**
+     *  Resume completed task.
+     *
+     *  @return \illuminate\Http\Response
+     */
+    public function resume($id)
+    {
+        $task = Task::find($id);
+        $task->complete = 0;
+        $task->save();
+        return Redirect(route('task.completed'));
     }
 }

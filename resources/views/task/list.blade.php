@@ -50,11 +50,10 @@
                             @foreach($tasks as $task)
                                 <tr>
                                     <td>
-                                        <form action="{{ route('') }}">
-                                            <button class="btn btn-success"
-                                                    type="submit"
-                                                    name="complete"
-                                                    value="1">
+                                        <form action="{{ route('task.complete', $task->id) }}" method="POST">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button class="btn btn-success" type="submit">
                                                 完成
                                             </button>
                                         </form>

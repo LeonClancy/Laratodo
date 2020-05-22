@@ -19,11 +19,10 @@
                         @foreach($tasks as $task)
                             <tr>
                                 <td>
-                                    <form action="">
-                                        <button class="btn btn-wanring"
-                                                type="submit"
-                                                name="complete"
-                                                value="0">
+                                    <form action="{{ route('task.resume', $task->id) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button class="btn btn-warning" type="submit">
                                             還原
                                         </button>
                                     </form>
