@@ -24,5 +24,5 @@ Route::resource('task', 'TaskController');
 
 Route::get('/completed', 'TaskController@completed')->name('task.completed');
 
-Route::patch('/task/{id}/complete', 'TaskController@complete')->name('task.complete');
-Route::patch('/task/{id}/resume', 'TaskController@resume')->name('task.resume');
+Route::patch('/task/{task}/complete', 'TaskController@complete')->name('task.complete');
+Route::patch('/task/{task}/resume', 'TaskController@resume')->name('task.resume');
